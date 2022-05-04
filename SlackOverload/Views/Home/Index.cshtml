@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNetCore.Html
+@model SlackOverload.Models.QuestionPaginationViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-controller="Questions" asp-action="Create">Create New Question</a>
+</p>
+
+<form asp-controller="Home" asp-action="Index" method="post">
+    <label class="control-label">Order By</label><br />
+    @if(@ViewBag.Order == "date") {
+        <label class="control-label">Most Answered</label>
+    } else if(@ViewBag.Order == "mostanswered") {
+        <label class="control-label">Date</label>
+    }
+    <input type="hidden"  class="form-control" name="orderby" value="@ViewBag.Order" />
+    <br />
+    <input type="submit" value="Change Order" />
+
+        @foreach(var question in Model.questionList){
+            <div class="d-flex mb-5">
+                <div>
+                    <h6>@question.Date.ToLongDateString()</h6>
+                    <h2>Question: @question.Title</h2>
+                    @*@(new HtmlString(@question.Body))*@
+                    <span>- @question.User.UserName</span><br />
+                </div>
+                <div style="margin-left: 50px;">
+                    @if(question.Answers.Any()) {
+                        <span>Number of Answers: @question.Answers.Count</span>
+                    } else {
+                        <span>No Answer for this question yet.</span>
+                    }
+                    <br />
+                    <a asp-controller="Questions" asp-action="Details" asp-route-Id="@question.Id">Details</a>
+                    <h5><a asp-controller="Answers" asp-action="Create" asp-route-questionId="@question.Id" >Answer this question</a></h5>
+                </div>
+            </div>
+            <hr />
+        }
+        <ul class="pagination">
+            @for(int i = 1;i <= Model.pageCount; i++) {
+                <li class="page-item">
+                    @if(i != Model.currentPageIndex) {
+                        <a class="page-link" href="javascript:changePage(@i);" >@i</a>
+                    } else {
+                        <a class="page-link">@i</a>
+                    }
+                </li>
+            }
+        </ul>
+        <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />
+</form>
+
+@section Scripts{
+    <script type="text/javascript">
+        function changePage(index){
+            console.log(document.getElementById("hfCurrentPageIndex").value);
+            document.getElementById("hfCurrentPageIndex").value=index;
+            console.log(document.forms[0]);
+            document.forms[0].submit();
+        }
+    </script>
+}

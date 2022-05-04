@@ -1,0 +1,13 @@
+﻿<form asp-action="MakeUserAdmin">
+    <div class="form-group">
+        <label class="control-label">User</label>
+        <select class="form-control" name="userId" asp-items="ViewBag.Users"></select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Role</label>
+        <select class="form-control" name="roleId" asp-items="ViewBag.Roles"></select>
+    </div>
+    <div class="form-group">
+        <input class="btn btn-primary" type="submit" value="Make user admin" />
+    </div>
+</form>

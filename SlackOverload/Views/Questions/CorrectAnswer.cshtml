@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Html
+@model Answer
+
+<h2>Question</h2>
+<div>
+    <label>Title</label>
+    <p>@ViewBag.Question.Title</p>
+    <label>Body</label>
+    <p>@(new HtmlString(@ViewBag.Question.Body))</p>
+</div>
+
+<form asp-action="CorrectAnswer">
+    <div class="form-group">
+        <label asp-for="Body">Answer</label>
+        <p>@(new HtmlString(@Model.Body))</p>
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="Id" class="form-control" value="@Model.Id" />
+    </div>
+    <input class="btn btn-primary" type="submit" value="Make it correct" />
+</form>

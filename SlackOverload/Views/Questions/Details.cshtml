@@ -1,0 +1,74 @@
+﻿@using Microsoft.AspNetCore.Html
+@model SlackOverload.Models.Question
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Question</h4>
+    <hr />
+    <div>
+        <h6>@Model.Date.ToLongDateString()</h6>
+        <h3>Question: @Model.Title</h3>
+        <p>@(new HtmlString(@Model.Body))</p>
+        <span>- By @Model.User.UserName</span><br />
+        <a asp-controller="Comment" asp-action="QuestionComment" asp-route-questionId="@Model.Id">Comment on this question</a>
+        @if (@Model.QuestionComments.Any()) {
+        <h4>Comments</h4>
+            <ul>
+                @foreach(var comment in @Model.QuestionComments) {
+                    <li>@(new HtmlString(@comment.Body))</li>
+                }
+            </ul>
+        } else {
+            <p>No comments yet</p>
+        }
+    </div>
+    <div>
+        <h6>Answers</h6>
+        <ol>
+            @foreach (var answer in @Model.Answers) {
+                @if (@answer.IsCorrect) {
+                    <span>Correct Answer</span><br />
+                }
+                <li class="mb-5">
+                    <div class="d-flex">
+                        <div>
+                            <p>@(new HtmlString(@answer.Body))</p>
+                            <a asp-controller="Comment" asp-action="AnswerComment" asp-route-answerId="@answer.Id">Comment</a>
+                            <h4>Comments</h4>
+                            @if (@answer.AnswerComments.Any()) {
+                                <ul>
+                                    @foreach(var comment in @answer.AnswerComments) {
+                                        <li>@(new HtmlString(@comment.Body))</li>
+                                    }
+                                </ul>
+                            } else {
+                                <p>No comments yet</p>
+                            }
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <div>
+                            <form asp-action="Vote">
+                                <input type="hidden" name="answerId" value="@answer.Id" />
+                                <select name="value">
+                                    <option value="5">UP</option>
+                                    <option value="-5">DOWN</option>
+                                </select>
+                                <input class="btn btn-secondary" type="submit" value="Vote" />
+                            </form>
+                        </div>
+                        <a asp-controller="Questions" asp-action="CorrectAnswer" asp-route-questionId="@Model.Id" asp-route-answerId="@answer.Id"  >Make this answer correct</a>
+                    </div>
+                </li>
+            }
+        </ol>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Home" asp-action="Index">Back to List</a>
+</div>
